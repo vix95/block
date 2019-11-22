@@ -2,7 +2,8 @@ import java.io.*;
 import java.util.Scanner;
 
 public class Block {
-    private static String path = System.getProperty("user.dir") + "/test_files";
+    private static String images_path = System.getProperty("user.dir") + "/images";
+    private static String key_path = System.getProperty("user.dir") + "/key";
 
     public static void main(String[] args) {
         try {
@@ -10,7 +11,12 @@ public class Block {
 
             if (args.length > 0)
                 System.out.print("You shouldn't provide any arguments, type: java Block\n");
+
             key = readKey();
+            if (key != null) {
+                EcbCipher ecbCipher = new EcbCipher(key);
+                ecbCipher.encryptImage(images_path);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -19,7 +25,7 @@ public class Block {
     private static String readKey() {
         Scanner scanner;
         try {
-            scanner = new Scanner(new File(path + "/key.txt"));
+            scanner = new Scanner(new File(key_path + "/key.txt"));
             try {
                 String key = scanner.nextLine().toLowerCase();
                 if (!key.equals(key.replaceAll("[^a-zA-Z ]+ ", ""))) {
