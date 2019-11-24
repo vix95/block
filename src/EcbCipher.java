@@ -1,7 +1,6 @@
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.Console;
 import java.io.File;
 
 class EcbCipher {
@@ -32,7 +31,7 @@ class EcbCipher {
 
                         // block when width or height divided by chunks isn't integer
                         if ((i + x == width) || (j + y == height)) break;
-                        encrypted[i + x][j + y] = xor(plain[i + x][j + y], (byte) this.key[k]);
+                        encrypted[i + x][j + y] = (byte) (xor(plain[i + x][j + y], (byte) this.key[k]) % 2);
                         k = ++k % this.key.length;
                     }
                 }
@@ -72,7 +71,9 @@ class EcbCipher {
             bufferedImage = new BufferedImage(image_width, image_height, BufferedImage.TYPE_BYTE_BINARY);
             for (int x = 0; x < image_width; x++) {
                 for (int y = 0; y < image_height; y++) {
-                    bufferedImage.setRGB(x, y, encrypted[x][y]);
+                    // abs to binary values '0, 1' and negative to get color values
+                    // black: 0; white: -1
+                    bufferedImage.setRGB(x, y, -Math.abs(encrypted[x][y]));
                 }
             }
 
