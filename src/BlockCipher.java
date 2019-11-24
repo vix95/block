@@ -1,6 +1,7 @@
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Random;
 
 class BlockCipher {
     private char[] key;
@@ -38,7 +39,7 @@ class BlockCipher {
 
                         // block when width or height divided by chunks isn't integer
                         if ((i + x == image_width) || (j + y == image_height)) break;
-                        encrypted[i + x][j + y] = (byte) (xor(plain[i + x][j + y], (byte) this.key[k]) % 2);
+                        encrypted[i + x][j + y] = (xor(plain[i + x][j + y], (byte) this.key[k]));
                         k = ++k % this.key.length;
                     }
                 }
@@ -58,6 +59,7 @@ class BlockCipher {
         final int image_width = plain.length;
         final int image_height = plain[0].length;
         byte[][] encrypted = new byte[image_width][image_height];
+        byte previous_xor = 0;
         int k = 0;
 
         int chunk_width = 3;
@@ -73,7 +75,16 @@ class BlockCipher {
 
                         // block when width or height divided by chunks isn't integer
                         if ((i + x == image_width) || (j + y == image_height)) break;
-                        encrypted[i + x][j + y] = (byte) (xor(plain[i + x][j + y], (byte) this.key[k]) % 2);
+                        byte xor = (xor(plain[i + x][j + y], (byte) this.key[k]));
+
+                        // first block of chunk: XOR + randomized vector
+                        // each other block of chunk: previous value + XOR of current
+                        if ((x == 0 && y == 0))
+                            encrypted[i + x][j + y] = (byte) (xor + new Random().nextInt());
+                        else
+                            encrypted[i + x][j + y] = (byte) (xor + previous_xor);
+
+                        previous_xor = encrypted[i + x][j + y];
                         k = ++k % this.key.length;
                     }
                 }
@@ -120,7 +131,7 @@ class BlockCipher {
             for (int y = 0; y < image_height; y++) {
                 // abs to binary values '0, 1' and negative to get color values
                 // black: 0; white: -1
-                bufferedImage.setRGB(x, y, -Math.abs(bytes[x][y]));
+                bufferedImage.setRGB(x, y, -Math.abs(bytes[x][y] % 2)); // mod 2 because want binary values
             }
         }
 
