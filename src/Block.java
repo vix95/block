@@ -14,8 +14,9 @@ public class Block {
 
             key = readKey();
             if (key != null) {
-                EcbCipher ecbCipher = new EcbCipher(key);
-                ecbCipher.encryptImage(images_path);
+                BlockCipher blockCipher = new BlockCipher(key);
+                blockCipher.ecbEncrypt(images_path);
+                blockCipher.cbcEncrypt(images_path);
             }
         } catch (Exception e) {
             e.printStackTrace();
