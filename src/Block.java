@@ -13,11 +13,9 @@ public class Block {
                 System.out.print("You shouldn't provide any arguments, type: java Block\n");
 
             key = readKey();
-            if (key != null) {
-                BlockCipher blockCipher = new BlockCipher(key);
-                blockCipher.ecbEncrypt(images_path);
-                blockCipher.cbcEncrypt(images_path);
-            }
+            BlockCipher blockCipher = new BlockCipher(key);
+            blockCipher.ecbEncrypt(images_path);
+            blockCipher.cbcEncrypt(images_path);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -26,20 +24,27 @@ public class Block {
     private static String readKey() {
         Scanner scanner;
         try {
-            scanner = new Scanner(new File(key_path + "/key.txt"));
-            try {
-                String key = scanner.nextLine().toLowerCase();
-                if (!key.equals(key.replaceAll("[^a-zA-Z ]+ ", ""))) {
+            File file = new File(key_path + "/key.txt");
+            boolean file_exists = file.exists();
+
+            if (file_exists) {
+                scanner = new Scanner(file);
+                try {
+                    String key = scanner.nextLine().toLowerCase();
+                    if (!key.equals(key.replaceAll("[^a-zA-Z ]+ ", ""))) {
+                        System.out.print("Error: unrecognized key, the key must be a positive number and meet the requirements\n");
+                        return null;
+                    }
+
+                    System.out.printf("The key has been loaded: %s\n", key);
+                    return key;
+                } catch (Exception e) {
                     System.out.print("Error: unrecognized key, the key must be a positive number and meet the requirements\n");
                     return null;
                 }
-
-                System.out.printf("The key has been loaded: %s\n", key);
-                return key;
-            } catch (Exception e) {
-                System.out.print("Error: unrecognized key, the key must be a positive number and meet the requirements\n");
-                return null;
             }
+
+            return null;
         } catch (Exception e) {
             System.out.print("Error: key file not found, can't do any action\n");
         }

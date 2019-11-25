@@ -7,7 +7,8 @@ class BlockCipher {
     private char[] key;
 
     BlockCipher(String key) {
-        this.key = key.toCharArray();
+        if (key == null) this.key = null;
+        else this.key = key.toCharArray();
     }
 
     private byte xor(byte b1, byte b2) {
@@ -39,8 +40,10 @@ class BlockCipher {
 
                         // block when width or height divided by chunks isn't integer
                         if ((i + x >= image_width) || (j + y >= image_height)) break;
-                        encrypted[i + x][j + y] = (xor(plain[i + x][j + y], (byte) this.key[k]));
-                        k = ++k % this.key.length;
+                        if (key != null) {
+                            encrypted[i + x][j + y] = (xor(plain[i + x][j + y], (byte) this.key[k]));
+                            k = ++k % this.key.length;
+                        } else encrypted[i + x][j + y] = plain[i + x][j + y];
                     }
                 }
             }
@@ -75,7 +78,12 @@ class BlockCipher {
 
                         // block when width or height divided by chunks isn't integer
                         if ((i + x >= image_width) || (j + y >= image_height)) break;
-                        byte xor = (xor(plain[i + x][j + y], (byte) this.key[k]));
+
+                        byte xor;
+                        if (key != null) {
+                            xor = (xor(plain[i + x][j + y], (byte) this.key[k]));
+                            k = ++k % this.key.length;
+                        } else xor = plain[i + x][j + y];
 
                         // first block of chunk: XOR + randomized vector
                         // each other block of chunk: previous value + XOR of current
@@ -85,7 +93,6 @@ class BlockCipher {
                             encrypted[i + x][j + y] = (byte) (xor + previous_xor);
 
                         previous_xor = encrypted[i + x][j + y];
-                        k = ++k % this.key.length;
                     }
                 }
             }
