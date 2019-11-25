@@ -38,7 +38,7 @@ class BlockCipher {
                     for (int y = 0; y < chunk_height; y++) {
 
                         // block when width or height divided by chunks isn't integer
-                        if ((i + x == image_width) || (j + y == image_height)) break;
+                        if ((i + x >= image_width) || (j + y >= image_height)) break;
                         encrypted[i + x][j + y] = (xor(plain[i + x][j + y], (byte) this.key[k]));
                         k = ++k % this.key.length;
                     }
@@ -74,7 +74,7 @@ class BlockCipher {
                     for (int y = 0; y < chunk_height; y++) {
 
                         // block when width or height divided by chunks isn't integer
-                        if ((i + x == image_width) || (j + y == image_height)) break;
+                        if ((i + x >= image_width) || (j + y >= image_height)) break;
                         byte xor = (xor(plain[i + x][j + y], (byte) this.key[k]));
 
                         // first block of chunk: XOR + randomized vector
@@ -100,7 +100,9 @@ class BlockCipher {
 
         // load the image
         try {
-            bufferedImage = ImageIO.read(new File(path + "/plain.bmp"));
+            String filepath = path + "/plain.bmp";
+            bufferedImage = ImageIO.read(new File(filepath));
+            System.out.printf("Image has been loaded: %s\n", filepath);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.print("Error: image file not found/can't load, can't do any action\n");

@@ -34,7 +34,7 @@ public class Block {
                     return null;
                 }
 
-                System.out.printf("The key has been loaded: %s\n\n", key);
+                System.out.printf("The key has been loaded: %s\n", key);
                 return key;
             } catch (Exception e) {
                 System.out.print("Error: unrecognized key, the key must be a positive number and meet the requirements\n");
