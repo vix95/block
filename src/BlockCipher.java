@@ -139,7 +139,9 @@ class BlockCipher {
 
         // save the image
         try {
-            ImageIO.write(bufferedImage, "bmp", new File(path + "/" + filename));
+            String filepath = path + "/" + filename;
+            ImageIO.write(bufferedImage, "bmp", new File(filepath));
+            System.out.printf("Encrypted image has been saved: %s\n", filepath);
         } catch (Exception e) {
             System.out.print("Save image failed\n");
         }
