@@ -88,7 +88,7 @@ class BlockCipher {
                         // first block of chunk: XOR + randomized vector
                         // each other block of chunk: previous value + XOR of current
                         if ((x == 0 && y == 0))
-                            encrypted[i + x][j + y] = (byte) (xor + new Random().nextInt());
+                            encrypted[i + x][j + y] = (byte) (xor + new Random().nextInt()); // Random().nextInt() - initialization vector
                         else
                             encrypted[i + x][j + y] = (byte) (xor + previous_xor);
 

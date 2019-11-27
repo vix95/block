@@ -29,24 +29,14 @@ public class Block {
 
             if (file_exists) {
                 scanner = new Scanner(file);
-                try {
-                    String key = scanner.nextLine().toLowerCase();
-                    if (!key.equals(key.replaceAll("[^a-zA-Z ]+ ", ""))) {
-                        System.out.print("Error: unrecognized key, the key must be a positive number and meet the requirements\n");
-                        return null;
-                    }
-
-                    System.out.printf("The key has been loaded: %s\n", key);
-                    return key;
-                } catch (Exception e) {
-                    System.out.print("Error: unrecognized key, the key must be a positive number and meet the requirements\n");
-                    return null;
-                }
+                String key = scanner.nextLine().toLowerCase();
+                System.out.printf("The key has been loaded: %s\n", key);
+                return key;
             }
 
             return null;
         } catch (Exception e) {
-            System.out.print("Error: key file not found, can't do any action\n");
+            System.out.print("Error: something goes wrong, can't load the key\n");
         }
 
         return null;
