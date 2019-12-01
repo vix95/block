@@ -79,18 +79,17 @@ class BlockCipher {
                         // block when width or height divided by chunks isn't integer
                         if ((i + x >= image_width) || (j + y >= image_height)) break;
 
-                        byte xor;
-                        if (key != null) {
-                            xor = (xor(plain[i + x][j + y], (byte) this.key[k]));
-                            k = ++k % this.key.length;
-                        } else xor = plain[i + x][j + y];
-
-                        // first block of chunk: XOR + randomized vector
+                        // first block of chunk: m ^ randomized vector
                         // each other block of chunk: previous value + XOR of current
                         if ((x == 0 && y == 0))
-                            encrypted[i + x][j + y] = (byte) (xor + new Random().nextInt()); // Random().nextInt() - initialization vector
+                            encrypted[i + x][j + y] = xor(plain[i + x][j + y], (byte) new Random().nextInt()); // Random().nextInt() - initialization vector
                         else
-                            encrypted[i + x][j + y] = (byte) (xor + previous_xor);
+                            encrypted[i + x][j + y] = xor(previous_xor, plain[i + x][j + y]);
+
+                        if (key != null) {
+                            encrypted[i + x][j + y] = (xor(encrypted[i + x][j + y], (byte) this.key[k]));
+                            k = ++k % this.key.length;
+                        }
 
                         previous_xor = encrypted[i + x][j + y];
                     }
